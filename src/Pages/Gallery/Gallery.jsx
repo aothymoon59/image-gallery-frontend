@@ -109,16 +109,7 @@ const Gallery = () => {
                 </div>
                 <div className='text-red-500'>
                     {
-                        selectedImage.length === 1 ? (
-                            <button className="text-xl font-bold">Delete File</button>
-                        ) : (
-                            selectedImage.length > 0 ? (
-                                <button className="text-xl font-bold">Delete Files</button>
-                            ) : (
-                                ""
-                            )
-                        )
-
+                        selectedImage.length === 1 ? <button className="text-xl font-bold">Delete File</button> : selectedImage.length > 0 ? <button className="text-xl font-bold">Delete Files</button> : ""
                     }
                 </div>
             </div>

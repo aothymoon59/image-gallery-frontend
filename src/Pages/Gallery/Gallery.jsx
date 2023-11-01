@@ -13,12 +13,14 @@ const Gallery = () => {
     const [imageLoading, setImageLoading] = useState(true)
     const [selectedImage, setSelectedImage] = useState([])
 
+    // console.log(selectedImage)
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('https://image-gallery-server.vercel.app/get-gallery-images');
-                // const checkedImages = response.data.filter(data => data?.isChecked === true);
-                // setSelectedImage(checkedImages);
+                const checkedImages = response.data.filter(data => data?.isChecked === true);
+                setSelectedImage(checkedImages);
                 setGalleryData(response.data);
                 setImageLoading(false);
             } catch (error) {
@@ -73,6 +75,25 @@ const Gallery = () => {
             });
     }
 
+    const handleSelectedImage = (e, id) => {
+        const filterData = galleryData?.find((item) => item?._id == id);
+        const updatedData = {
+            ...filterData,
+            isChecked: e.target.checked,
+        };
+
+        axios
+            .patch(`http://localhost:5000/update-selected-image/${id}`, updatedData)
+            .then((res) => {
+                if (res.data?.matchedCount) {
+                    setControl(!control);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
     return (
         <div className="shadow-md">
             <div className="p-5 border-b">
@@ -93,16 +114,16 @@ const Gallery = () => {
                                                         {/* single image component start  */}
                                                         <div className={`group border-2 rounded-xl overflow-hidden relative transition duration-200 transform`}>
                                                             <img src={item?.thumb} className="w-full h-full" alt="Gallery Image" />
-                                                            <div className="bg-black rounded-xl bg-opacity-75 opacity-0 hover:opacity-100 text-blue-100 font-medium p-2 absolute inset-0 transition duration-300 ease-in-out">
-                                                                <input type="checkbox" className='w-5 h-5 rounded-md absolute top-[7%] left-[7%]' name="" id="" />
+                                                            <div className={`${item?.isChecked ? '' : 'hidden'} group-hover:block bg-black rounded-xl bg-opacity-50 opacity-100 text-blue-100 font-medium p-2 absolute inset-0 transition duration-300 ease-in-out`}>
+                                                                <input onChange={(e) => handleSelectedImage(e, item?._id)}
+                                                                    type="checkbox"
+                                                                    defaultChecked={item?.isChecked} className='w-5 h-5 rounded-md absolute top-[7%] left-[7%]' name="" id="" />
                                                             </div>
                                                         </div>
                                                         {/* single image component end  */}
-
                                                     </div>
                                                 )
                                             }
-
                                         </Draggable>;
                                     })}
                                     {provided.placeholder}

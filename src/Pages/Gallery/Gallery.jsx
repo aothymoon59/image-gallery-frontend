@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
+import ImageCard from "../../Components/ImageCard/ImageCard";
 
 const Gallery = () => {
     const [finalGalleryData, setFinalGalleryData] = useState([])
@@ -27,12 +28,15 @@ const Gallery = () => {
             <div className="p-5 border-b">
                 <h3 className="text-xl font-bold">Gallery</h3>
             </div>
-            <div className="p-5">
-                {
-                    finalGalleryData?.map((item, index) => {
-                        return <h1 key={item?.id}>{item?.id}</h1>
-                    })
-                }
+            <div className="p-5 grid grid-cols-5 gap-5">
+                {finalGalleryData?.map((item, index) => {
+                    // Check if it's the first image to apply different styling
+                    if (index === 0) {
+                        return <ImageCard key={item?.id} item={item} featured />;
+                    } else {
+                        return <ImageCard key={item?.id} item={item} />;
+                    }
+                })}
             </div>
         </div>
     );

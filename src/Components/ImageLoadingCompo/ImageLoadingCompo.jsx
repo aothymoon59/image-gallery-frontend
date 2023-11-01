@@ -2,7 +2,7 @@ import { LineWave } from 'react-loader-spinner';
 
 const ImageLoadingCompo = () => {
     return (
-        <div className='w-full flex justify-center items-center min-h-[40vh]'>
+        <div className='w-full flex justify-center items-center min-h-[50vh]'>
             <LineWave
                 height="100"
                 width="100"

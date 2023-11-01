@@ -10,27 +10,28 @@ const Gallery = () => {
     const [galleryData, setGalleryData] = useState([])
     const [control, setControl] = useState(true);
     const [imageUploadLoading, setImageUploadLoading] = useState(false)
+    const [imageLoading, setImageLoading] = useState(true)
+    const [selectedImage, setSelectedImage] = useState([])
 
-    useEffect(() => {
-        // Update galleryData when finalGalleryData changes
-        setGalleryData(finalGalleryData);
-    }, [finalGalleryData]);
+    // useEffect(() => {
+    //     // Update galleryData when finalGalleryData changes
+    //     setGalleryData(finalGalleryData);
+    // }, [finalGalleryData]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('/galleryData.json');
-                if (response.ok) {
-                    const data = await response.json();
-                    setFinalGalleryData(data);
-                }
+                const response = await axios.get('http://localhost:5000/get-gallery-images');
+                // const checkedImages = response.data.filter(data => data?.isChecked === true);
+                // setSelectedImage(checkedImages);
+                setGalleryData(response.data);
+                setImageLoading(false);
             } catch (error) {
-                // Handle the error here
-                console.error('Error fetching gallery data:', error);
+                console.log(error);
             }
         };
         fetchData();
-    }, []);
+    }, [control]);
 
     const handleOnDragEnd = (result) => {
         if (!result.destination) return
@@ -88,7 +89,7 @@ const Gallery = () => {
                         (provided) => (
                             <div className="p-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5" {...provided.droppableProps} ref={provided.innerRef}>
                                 {galleryData?.map((item, index) => {
-                                    return <Draggable key={item?.id} draggableId={item?.id} index={index}>
+                                    return <Draggable key={item?._id} draggableId={item?._id} index={index}>
                                         {
                                             (provided) => (
                                                 // Check if it's the first image to apply different styling
@@ -110,7 +111,7 @@ const Gallery = () => {
                                 })}
                                 {provided.placeholder}
                                 {/* image upload start */}
-                                <div className="col-span-1 row-span-1 h-full">
+                                <div className="col-span-1 row-span-1 h-full min-h-[210px]">
                                     <label htmlFor="file-upload" className="cursor-pointer">
                                         <input
                                             id="file-upload"
@@ -119,7 +120,7 @@ const Gallery = () => {
                                             name="image"
                                             onChange={handleFileChange}
                                         />
-                                        <div className="border-2 border-dashed border-gray-300 p-6 rounded-lg h-full flex flex-col items-center justify-center">
+                                        <div className="border-2 border-dashed border-gray-300 p-6 rounded-lg h-full min-h-[210px] flex flex-col items-center justify-center">
                                             <BiImage className="text-3xl" />
                                             <p className="text-xl font-semibold text-gray-700 text-center">Add Images</p>
 

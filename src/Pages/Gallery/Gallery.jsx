@@ -1,11 +1,15 @@
+import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import toast from "react-hot-toast";
 import { BiImage } from "react-icons/bi";
 
 const Gallery = () => {
     const [finalGalleryData, setFinalGalleryData] = useState([])
     const [galleryData, setGalleryData] = useState([])
+    const [control, setControl] = useState(true);
+    const [imageUploadLoading, setImageUploadLoading] = useState(false)
 
     useEffect(() => {
         // Update galleryData when finalGalleryData changes
@@ -36,15 +40,42 @@ const Gallery = () => {
 
         setGalleryData(items)
     }
-    const [selectedFile, setSelectedFile] = useState(null);
 
     const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        setSelectedFile(file);
-        console.log(file)
-        // Additional logic to handle the file
-        // You can upload the file or perform other operations here
-    };
+        const image = e.target.files[0];
+        const formData = new FormData();
+        formData.append("image", image);
+
+        const imgBBHostingUrl = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_KEY}`;
+
+        setImageUploadLoading(true)
+        fetch(imgBBHostingUrl, {
+            method: "POST",
+            body: formData,
+        })
+            .then((res) => res.json())
+            .then((imgData) => {
+                if (imgData.success) {
+                    const thumb = imgData.data.display_url;
+                    const finalGalleryData = {
+                        thumb
+                    }
+                    axios
+                        .post("http://localhost:5000/upload-image", finalGalleryData)
+                        .then((res) => {
+                            if (res.data?.insertedId) {
+                                toast.success('Image upload successfully')
+                                setControl(!control);
+                                setImageUploadLoading(false)
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                }
+
+            });
+    }
 
     return (
         <div className="shadow-md">
@@ -55,7 +86,7 @@ const Gallery = () => {
                 <Droppable droppableId="gallery">
                     {
                         (provided) => (
-                            <div className="p-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5" {...provided.droppableProps} ref={provided.innerRef}>
+                            <div className="p-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5" {...provided.droppableProps} ref={provided.innerRef}>
                                 {galleryData?.map((item, index) => {
                                     return <Draggable key={item?.id} draggableId={item?.id} index={index}>
                                         {
@@ -78,24 +109,27 @@ const Gallery = () => {
                                     </Draggable>;
                                 })}
                                 {provided.placeholder}
-                                {/* image upload  */}
+                                {/* image upload start */}
                                 <div className="col-span-1 row-span-1 h-full">
                                     <label htmlFor="file-upload" className="cursor-pointer">
                                         <input
                                             id="file-upload"
                                             type="file"
                                             className="hidden"
+                                            name="image"
                                             onChange={handleFileChange}
                                         />
                                         <div className="border-2 border-dashed border-gray-300 p-6 rounded-lg h-full flex flex-col items-center justify-center">
                                             <BiImage className="text-3xl" />
                                             <p className="text-xl font-semibold text-gray-700 text-center">Add Images</p>
-                                            {selectedFile && (
-                                                <p className="text-xs mt-2 text-center">{selectedFile.name}</p>
-                                            )}
+
+                                            {
+                                                imageUploadLoading ? <p className="text-xs mt-2 text-center">Uploading...</p> : ''
+                                            }
                                         </div>
                                     </label>
                                 </div>
+                                {/* image upload end */}
                             </div>
                         )
                     }

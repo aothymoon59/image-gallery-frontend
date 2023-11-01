@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { BiImage } from "react-icons/bi";
 
 const Gallery = () => {
     const [finalGalleryData, setFinalGalleryData] = useState([])
@@ -77,7 +78,24 @@ const Gallery = () => {
                                     </Draggable>;
                                 })}
                                 {provided.placeholder}
-
+                                {/* image upload  */}
+                                <div className="col-span-1 row-span-1 h-full">
+                                    <label htmlFor="file-upload" className="cursor-pointer">
+                                        <input
+                                            id="file-upload"
+                                            type="file"
+                                            className="hidden"
+                                            onChange={handleFileChange}
+                                        />
+                                        <div className="border-2 border-dashed border-gray-300 p-6 rounded-lg h-full flex flex-col items-center justify-center">
+                                            <BiImage className="text-3xl" />
+                                            <p className="text-xl font-semibold text-gray-700 text-center">Add Images</p>
+                                            {selectedFile && (
+                                                <p className="text-xs mt-2 text-center">{selectedFile.name}</p>
+                                            )}
+                                        </div>
+                                    </label>
+                                </div>
                             </div>
                         )
                     }

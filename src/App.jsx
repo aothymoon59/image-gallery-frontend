@@ -6,8 +6,8 @@ const App = () => {
   return (
     <div>
       <Container>
-        {/* <Gallery /> */}
-        <Gallery2 />
+        <Gallery />
+        {/* <Gallery2 /> */}
       </Container>
     </div>
   );

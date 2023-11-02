@@ -45,23 +45,6 @@ const Gallery = () => {
         setGalleryData(updatedGallery);
     };
 
-    // mobile device touch functionality
-    const handleTouchStart = (index) => (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        event.dataTransfer.setData('text/plain', index);
-    };
-
-    const handleTouchEnd = (targetIndex) => (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        const sourceIndex = event.dataTransfer.getData('text/plain');
-        const updatedGallery = [...galleryData];
-        const [draggedItem] = updatedGallery.splice(sourceIndex, 1);
-        updatedGallery.splice(targetIndex, 0, draggedItem);
-        setGalleryData(updatedGallery);
-    };
-
     // image upload handler with functionality 
     const handleFileChange = (event) => {
         const image = event.target.files[0];
@@ -162,8 +145,8 @@ const Gallery = () => {
                                 title={`${selectedImage.length > 1 ? 'Unselect Files' : 'Unselect File'}`}
                                 type="checkbox"
                                 className='remove-all w-5 h-5 rounded-md'
-                                onChange={handleUnselectAllImages}
-                                defaultChecked={selectedImage.length > 0}
+                                onChange={handleUnselectAllImages} // Use onChange instead of onClick
+                                defaultChecked={selectedImage.length > 0} // Conditionally set checkbox state
                             />
                         )}
                     </div>
@@ -195,8 +178,6 @@ const Gallery = () => {
                             onDragOver={handleDragOver}
                             onDrop={(event) => handleDrop(event, index)}
                             draggable
-                            onTouchStart={handleTouchStart(index)}
-                            onTouchEnd={handleTouchEnd(index)}
                             className={`group border-2 rounded-xl overflow-hidden relative transition duration-200 transform ${index === 0 && 'col-span-2 row-span-2'}`}
                         >
                             <img src={image?.thumb} className="w-full h-full" alt="Gallery Image" />

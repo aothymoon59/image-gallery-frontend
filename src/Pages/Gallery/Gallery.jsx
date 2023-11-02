@@ -44,8 +44,8 @@ const Gallery = () => {
     };
 
     // image upload handler with functionality 
-    const handleFileChange = (e) => {
-        const image = e.target.files[0];
+    const handleFileChange = (event) => {
+        const image = event.target.files[0];
         const formData = new FormData();
         formData.append("image", image);
 
@@ -81,11 +81,11 @@ const Gallery = () => {
     }
 
     // select image handler with functionality 
-    const handleSelectedImage = (e, id) => {
-        const filterData = galleryData?.find((item) => item?._id == id);
+    const handleSelectedImage = (event, id) => {
+        const filteredData = galleryData?.find((item) => item?._id == id);
         const updatedData = {
-            ...filterData,
-            isChecked: e.target.checked,
+            ...filteredData,
+            isChecked: event.target.checked,
         };
         axios
             .patch(`https://image-gallery-server.vercel.app/update-selected-image/${id}`, updatedData)
@@ -104,7 +104,10 @@ const Gallery = () => {
             <div className="p-5 border-b flex justify-between">
                 <div>
                     {
-                        selectedImage.length <= 0 ? <h3 className="text-xl font-bold">Gallery</h3> : <h3 className="text-xl font-bold">{selectedImage.length} Files Selected</h3>
+                        selectedImage.length <= 0 ? <h3 className="text-xl font-bold">Gallery</h3> :
+                            selectedImage.length === 1 ?
+                                <h3 className="text-xl font-bold">{selectedImage.length} File Selected</h3> :
+                                <h3 className="text-xl font-bold">{selectedImage.length} Files Selected</h3>
                     }
                 </div>
                 <div className='text-red-500'>
@@ -118,17 +121,17 @@ const Gallery = () => {
                     {galleryData?.map((image, index) => (
                         <div
                             key={image._id}
-                            onDragStart={(e) => handleDragStart(e, index)}
+                            onDragStart={(event) => handleDragStart(event, index)}
                             onDragOver={handleDragOver}
-                            onDrop={(e) => handleDrop(e, index)}
+                            onDrop={(event) => handleDrop(event, index)}
                             draggable
                             className={`group border-2 rounded-xl overflow-hidden relative transition duration-200 transform ${index === 0 && 'col-span-2 row-span-2'}`}
                         >
                             <img src={image?.thumb} className="w-full h-full" alt="Gallery Image" />
-                            <div className={`${image?.isChecked ? '' : 'hidden'} group-hover:block bg-black rounded-xl bg-opacity-50 opacity-100 text-blue-100 font-medium p-2 absolute inset-0 transition duration-300 ease-in-out`}>
+                            <div className={`${image?.isChecked ? '!bg-opacity-20' : 'hidden'} group-hover:block bg-black rounded-xl  bg-opacity-70 opacity-100 text-blue-100 font-medium p-2 absolute inset-0 transition duration-300 ease-in-out`}>
                                 <input
                                     type="checkbox"
-                                    onChange={(e) => handleSelectedImage(e, image?._id)}
+                                    onChange={(event) => handleSelectedImage(event, image?._id)}
                                     defaultChecked={image?.isChecked} className='w-5 h-5 rounded-md absolute top-[7%] left-[7%]' />
                             </div>
                         </div>

@@ -76,10 +76,15 @@ const Gallery = () => {
                         })
                         .catch((err) => {
                             console.log(err);
+                            setImageUploadLoading(false)
                         });
                 }
 
-            });
+            }).catch(err => {
+                console.log(err.message)
+                setImageUploadLoading(false)
+                toast.error(err.message)
+            })
     }
 
     // select image handler with functionality 

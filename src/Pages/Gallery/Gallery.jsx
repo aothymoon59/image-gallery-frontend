@@ -133,6 +133,23 @@ const Gallery = () => {
             });
     };
 
+    // Function to delete selected images
+    const deleteSelectedImages = () => {
+        axios.delete('https://image-gallery-server.vercel.app/delete-selected-images')
+            .then(response => {
+                if (response.data.success) {
+                    toast.success(response.data.message);
+                    setControl(!control); // To trigger a re-render after deletion
+                } else {
+                    toast.error(response.data.message);
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                toast.error('Error deleting images');
+            });
+    };
+
 
 
     return (
@@ -142,10 +159,11 @@ const Gallery = () => {
                     <div className='flex items-center h-5'>
                         {selectedImage.length > 0 && (
                             <input
+                                title={`${selectedImage.length > 1 ? 'Unselect Files' : 'Unselect File'}`}
                                 type="checkbox"
                                 className='remove-all w-5 h-5 rounded-md'
-                                onChange={handleUnselectAllImages} // Use onChange instead of onClick
-                                defaultChecked={selectedImage.length > 0} // Conditionally set checkbox state
+                                onChange={handleUnselectAllImages}
+                                defaultChecked={selectedImage.length > 0}
                             />
                         )}
                     </div>
@@ -158,11 +176,15 @@ const Gallery = () => {
                     }
                 </div>
 
-                <div className='text-red-500'>
+                <button
+                    onClick={deleteSelectedImages}
+                    title={`${selectedImage.length > 1 ? 'Delete Files' : 'Delete File'}`}
+                    className='delete-image text-red-500 text-xl font-bold'
+                >
                     {
-                        selectedImage.length === 1 ? <button className="text-xl font-bold">Delete File</button> : selectedImage.length > 0 ? <button className="text-xl font-bold">Delete Files</button> : ""
+                        selectedImage.length === 1 ? "Delete File" : selectedImage.length > 0 ? "Delete Files" : ""
                     }
-                </div>
+                </button>
             </div>
             {
                 imageLoading ? <ImageLoadingCompo /> : <div className="p-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">

@@ -12,19 +12,21 @@ const Gallery = () => {
     const [selectedImage, setSelectedImage] = useState([])
 
     // get image data from api 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('https://image-gallery-server.vercel.app/get-gallery-images');
+    const fetchGalleryData = () => {
+        axios.get('https://image-gallery-server.vercel.app/get-gallery-images')
+            .then(response => {
                 const checkedImages = response.data.filter(data => data?.isChecked === true);
                 setSelectedImage(checkedImages);
                 setGalleryData(response.data);
                 setImageLoading(false);
-            } catch (error) {
+            })
+            .catch(error => {
                 console.log(error);
-            }
-        };
-        fetchData();
+            });
+    };
+
+    useEffect(() => {
+        fetchGalleryData();
     }, [control]);
 
     const handleDragStart = (e, index) => {
@@ -37,6 +39,23 @@ const Gallery = () => {
 
     const handleDrop = (e, targetIndex) => {
         const sourceIndex = e.dataTransfer.getData('text/plain');
+        const updatedGallery = [...galleryData];
+        const [draggedItem] = updatedGallery.splice(sourceIndex, 1);
+        updatedGallery.splice(targetIndex, 0, draggedItem);
+        setGalleryData(updatedGallery);
+    };
+
+    // mobile device touch functionality
+    const handleTouchStart = (index) => (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        event.dataTransfer.setData('text/plain', index);
+    };
+
+    const handleTouchEnd = (targetIndex) => (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const sourceIndex = event.dataTransfer.getData('text/plain');
         const updatedGallery = [...galleryData];
         const [draggedItem] = updatedGallery.splice(sourceIndex, 1);
         updatedGallery.splice(targetIndex, 0, draggedItem);
@@ -99,10 +118,38 @@ const Gallery = () => {
             });
     }
 
+    // unselect all images function
+    const handleUnselectAllImages = () => {
+        axios
+            .patch(`https://image-gallery-server.vercel.app/unselect-all-images`)
+            .then((res) => {
+                if (res.data?.matchedCount) {
+                    setControl(!control); // Triggers a re-render when unselect all
+                    toast.success('All images unselected');
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+
+
     return (
         <div className="shadow-md">
             <div className="p-5 border-b flex justify-between">
-                <div>
+                <div className='flex items-center gap-2'>
+                    <div className='flex items-center h-5'>
+                        {selectedImage.length > 0 && (
+                            <input
+                                type="checkbox"
+                                className='remove-all w-5 h-5 rounded-md'
+                                onChange={handleUnselectAllImages} // Use onChange instead of onClick
+                                defaultChecked={selectedImage.length > 0} // Conditionally set checkbox state
+                            />
+                        )}
+                    </div>
+
                     {
                         selectedImage.length <= 0 ? <h3 className="text-xl font-bold">Gallery</h3> :
                             selectedImage.length === 1 ?
@@ -110,6 +157,7 @@ const Gallery = () => {
                                 <h3 className="text-xl font-bold">{selectedImage.length} Files Selected</h3>
                     }
                 </div>
+
                 <div className='text-red-500'>
                     {
                         selectedImage.length === 1 ? <button className="text-xl font-bold">Delete File</button> : selectedImage.length > 0 ? <button className="text-xl font-bold">Delete Files</button> : ""
@@ -125,6 +173,8 @@ const Gallery = () => {
                             onDragOver={handleDragOver}
                             onDrop={(event) => handleDrop(event, index)}
                             draggable
+                            onTouchStart={handleTouchStart(index)}
+                            onTouchEnd={handleTouchEnd(index)}
                             className={`group border-2 rounded-xl overflow-hidden relative transition duration-200 transform ${index === 0 && 'col-span-2 row-span-2'}`}
                         >
                             <img src={image?.thumb} className="w-full h-full" alt="Gallery Image" />
@@ -132,7 +182,7 @@ const Gallery = () => {
                                 <input
                                     type="checkbox"
                                     onChange={(event) => handleSelectedImage(event, image?._id)}
-                                    defaultChecked={image?.isChecked} className='w-5 h-5 rounded-md absolute top-[7%] left-[7%]' />
+                                    checked={image?.isChecked} className='w-5 h-5 rounded-md absolute top-[7%] left-[7%]' />
                             </div>
                         </div>
                     ))}

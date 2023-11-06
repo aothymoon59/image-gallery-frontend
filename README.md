@@ -10,6 +10,7 @@ Live URL: https://ollyo-gallery.netlify.app/
 
 - [Features](#features)
 - [Technologies Used](#technologies-used)
+- [Server-Side Code](#server-side-code)
 - [File Structure](#file-structure)
 - [Usage](#usage)
 - [Credits](#credits)

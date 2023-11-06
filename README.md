@@ -24,6 +24,9 @@ Live URL: https://ollyo-gallery.netlify.app/
 5. **Setting Feature Image:** Set a feature image via sorting (first image from LTR direction).
 6. **User Experience:** Smooth and responsive experience with transitions or animations.
 
+## File Structure
+
+```plaintext
 react-image-gallery/
 │
 ├── public/
@@ -49,3 +52,4 @@ react-image-gallery/
 ├── package-lock.json # Dependency lock file
 ├── package.json # Project configuration and dependencies
 ├── tailwind.config.js # Tailwind CSS configuration
+```

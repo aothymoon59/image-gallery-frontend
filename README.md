@@ -23,3 +23,29 @@ Live URL: https://ollyo-gallery.netlify.app/
 4. **Uploading Image:** Upload image to click on Add Images.
 5. **Setting Feature Image:** Set a feature image via sorting (first image from LTR direction).
 6. **User Experience:** Smooth and responsive experience with transitions or animations.
+
+react-image-gallery/
+│
+├── public/
+│ ├──
+│
+├── src/
+│ ├── Components/
+│ │ ├── Container/
+│ │ │ ├── Container.jsx # Component for the main container
+│ │ │
+│ │ ├── ImageLoadingCompo/
+│ │ │ ├── ImageLoadingCompo.jsx # Component for image loading
+│ │ │
+│ ├── Pages/
+│ │ ├── Gallery/
+│ │ │ ├── Gallery.jsx # Page or component for the image gallery
+│ │ │
+│ ├── App.jsx # Main application component
+│ ├── index.css # Styles for the app
+│ ├── main.jsx # Entry point
+│
+├── index.html # Main HTML file
+├── package-lock.json # Dependency lock file
+├── package.json # Project configuration and dependencies
+├── tailwind.config.js # Tailwind CSS configuration

@@ -9,10 +9,9 @@ Live URL: https://ollyo-gallery.netlify.app/
 ## Table of Contents
 
 - [Features](#features)
+- [Technologies Used](#technologies-used)
 - [File Structure](#file-structure)
 - [Usage](#usage)
-- [Customization](#customization)
-- [Technologies Used](#technologies-used)
 - [Credits](#credits)
 
 ## Features:
@@ -39,6 +38,12 @@ Live URL: https://ollyo-gallery.netlify.app/
 ### Additional Implementations
 
 Although not required, the project voluntarily includes backend functionalities for server-side processing and data storage, along with an image upload feature. These additional aspects leverage Express.js for API handling and MongoDB for data storage, allowing users to upload and manage images via the application.
+
+## Server-Side Code
+
+For the server-side functionalities, including image upload and API handling, the backend code is available in a separate repository. You can find the server-side code at [Image Gallery Backend](https://github.com/aothymoon59/image-gallery-backend).
+
+The server-side code implements Express.js for API development and MongoDB for data storage, providing the necessary backend infrastructure to support image uploading and other functionalities in this project.
 
 ## File Structure
 
